@@ -17,6 +17,8 @@ import {
   VoiceConnectionStatus,
 } from '@discordjs/voice';
 import FileCacheProvider from './file-cache.js';
+import getRecommedationFromQuery from './spotify-api.js';
+import spotifyToYouTube from './get-songs.js';
 import debug from '../utils/debug.js';
 import {getGuildSettings} from '../utils/get-guild-settings.js';
 import {buildPlayingMessageEmbed} from '../utils/build-embed.js';
@@ -67,6 +69,7 @@ export default class {
   public guildId: string;
   public loopCurrentSong = false;
   public loopCurrentQueue = false;
+  public autoQueue = false;
   private currentChannel: VoiceChannel | undefined;
   private queue: QueuedSong[] = [];
   private queuePosition = 0;
@@ -573,6 +576,30 @@ export default class {
         this.add(currentSong);
       } else {
         throw new Error('No song currently playing.');
+      }
+    
+    // Automatically find a related track to the finished track and add to queue
+    } else if (this.autoQueue && newState.status === AudioPlayerStatus.Idle && this.status === STATUS.PLAYING) {
+      const currentSong - this.getCurrent();
+      
+      if (currentSong) {
+        
+        //Gets related track from spotify
+        const recommended = getRecommedationFromQuery;
+        const [convertedSongs, nSongsNotFound, totalSongs] = spotifyToYouTube(recommended);
+        
+        if (convertedSongs.length === 0) {
+          throw new Error('Could not find a related song to put on.');
+        }
+        
+        this.add({
+          convertedSongs[0],
+          addedInChannelId: currentSong.addedInChannelId,
+          requestedBy: "auto-queue",
+        }, {immediate: false});
+      
+      } else {
+        throw new Error('No song currently playing to find related track.');
       }
     }
 

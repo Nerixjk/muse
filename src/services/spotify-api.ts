@@ -65,6 +65,14 @@ export default class {
 
     return this.limitTracks(body.tracks, playlistLimit).map(this.toSpotifyTrack);
   }
+  
+  async getRecommedationFromQuery(query: string): Promise<SpotifyTrack[]> {
+    const {search} = await this.spotify.searchTracks(query, {limit: 1});
+    const searchTrackId = search.tracks.items[0].id;
+    const {recommended} = await spotify.getRecommendations({ seed_tracks: [searchTrackId], min_popularity: 50, limit: 1 });
+    
+    return this.limitTracks(recommended.tracks, playlistLimit).map(this.toSpotifyTrack);
+  }
 
   private toSpotifyTrack(track: SpotifyApi.TrackObjectSimplified): SpotifyTrack {
     return {
