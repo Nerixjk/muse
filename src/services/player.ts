@@ -593,7 +593,7 @@ export default class {
         }
         
         this.add({
-          convertedSongs[0],
+          ...convertedSongs[0],
           addedInChannelId: currentSong.addedInChannelId,
           requestedBy: "auto-queue",
         }, {immediate: false});
