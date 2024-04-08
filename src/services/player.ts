@@ -580,7 +580,7 @@ export default class {
     
     // Automatically find a related track to the finished track and add to queue
     } else if (this.autoQueue && newState.status === AudioPlayerStatus.Idle && this.status === STATUS.PLAYING) {
-      const currentSong - this.getCurrent();
+      const currentSong = this.getCurrent();
       
       if (currentSong) {
         
