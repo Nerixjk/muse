@@ -23,6 +23,7 @@ import Favorites from './commands/favorites.js';
 import ForwardSeek from './commands/fseek.js';
 import LoopQueue from './commands/loop-queue.js';
 import Loop from './commands/loop.js';
+import AutoQueue from './commands/auto-queue.js';
 import Move from './commands/move.js';
 import Next from './commands/next.js';
 import NowPlaying from './commands/now-playing.js';
