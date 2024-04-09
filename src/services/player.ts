@@ -1,4 +1,5 @@
 import {VoiceChannel, Snowflake} from 'discord.js';
+import {inject} from 'inversify';
 import {Readable} from 'stream';
 import hasha from 'hasha';
 import ytdl, {videoFormat} from 'ytdl-core';
