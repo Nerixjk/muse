@@ -27,10 +27,6 @@ export default class implements Command {
       throw new Error('no song to auto queue from!');
     }
 
-    if (player.autoQueue) {
-      player.autoQueue = false;
-    }
-
     player.autoQueue = !player.autoQueue;
 
     await interaction.reply((player.autoQueue ? 'starting auto queueing :)' : 'stopped auto queueing :('));
