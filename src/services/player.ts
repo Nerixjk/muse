@@ -17,8 +17,8 @@ import {
   VoiceConnectionStatus,
 } from '@discordjs/voice';
 import FileCacheProvider from './file-cache.js';
-import getRecommedationFromQuery from './spotify-api.js';
-import spotifyToYouTube from './get-songs.js';
+import SpotifyAPI from './spotify-api.js';
+import GetSongs from '../services/get-songs.js';
 import debug from '../utils/debug.js';
 import {getGuildSettings} from '../utils/get-guild-settings.js';
 import {buildPlayingMessageEmbed} from '../utils/build-embed.js';
@@ -84,10 +84,15 @@ export default class {
   private positionInSeconds = 0;
   private readonly fileCache: FileCacheProvider;
   private disconnectTimer: NodeJS.Timeout | null = null;
-
-  constructor(fileCache: FileCacheProvider, guildId: string) {
+  
+  private readonly spotifyAPI: SpotifyAPI;
+  private readonly getSongs: GetSongs;
+  
+  constructor(fileCache: FileCacheProvider, guildId: string, @inject(TYPES.Services.SpotifyAPI) spotifyAPI: SpotifyAPI, @inject(TYPES.Services.GetSongs) getSongs: GetSongs) {
     this.fileCache = fileCache;
     this.guildId = guildId;
+    this.spotifyAPI = spotifyAPI;
+    this.getSongs = getSongs;
   }
 
   async connect(channel: VoiceChannel): Promise<void> {
@@ -585,8 +590,8 @@ export default class {
       if (currentSong) {
         
         //Gets related track from spotify
-        const recommended = getRecommedationFromQuery;
-        const [convertedSongs, nSongsNotFound, totalSongs] = spotifyToYouTube(recommended);
+        const recommended = this.spotifyAPI.getRecommedationFromQuery(currentSong.title);
+        const [convertedSongs, nSongsNotFound, totalSongs] = this.getSongs.spotifyToYouTube(recommended);
         
         if (convertedSongs.length === 0) {
           throw new Error('Could not find a related song to put on.');
