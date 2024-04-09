@@ -18,6 +18,7 @@ import {
   VoiceConnectionStatus,
 } from '@discordjs/voice';
 import FileCacheProvider from './file-cache.js';
+import {TYPES} from '../types.js';
 import SpotifyAPI from './spotify-api.js';
 import GetSongs from '../services/get-songs.js';
 import debug from '../utils/debug.js';
