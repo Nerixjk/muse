@@ -590,8 +590,8 @@ export default class {
       if (currentSong) {
         
         //Gets related track from spotify
-        const recommended = this.spotifyAPI.getRecommedationFromQuery(currentSong.title);
-        const [convertedSongs, nSongsNotFound, totalSongs] = this.getSongs.spotifyToYouTube(recommended);
+        const recommended = await this.spotifyAPI.getRecommedationFromQuery(currentSong.title);
+        const [convertedSongs] = await this.getSongs.spotifyToYouTube(recommended, false);
         
         if (convertedSongs.length === 0) {
           throw new Error('Could not find a related song to put on.');
