@@ -590,9 +590,12 @@ export default class {
       const currentSong = this.getCurrent();
       
       if (currentSong) {
+
+        console.log(currentSong);
         
         //Gets related track from spotify
-        const recommended = await this.spotifyAPI.getRecommedationFromQuery(currentSong.title);
+        console.log(this.spotifyAPI);
+        const recommended = await this.spotifyAPI.getRecommendationFromQuery(currentSong.title);
         const [convertedSongs] = await this.getSongs.spotifyToYouTube(recommended, false);
         
         if (convertedSongs.length === 0) {
