@@ -589,8 +589,11 @@ export default class {
       if (currentSong) {
         
         //Gets related track from spotify
-        const spotifyAPI = container.get(SpotifyAPI);
-        const getSongs = container.get(GetSongs);
+        console.log('here1');
+        const spotifyAPI = container.get<SpotifyAPI>(TYPES.Services.SpotifyAPI);
+        console.log('here2');
+        const getSongs = container.get<GetSongs>(TYPES.Services.GetSongs);
+        console.log('here3');
         const recommended = await spotifyAPI.getRecommendationFromQuery(currentSong.title);
         const [convertedSongs] = await getSongs.spotifyToYouTube(recommended, false);
         
