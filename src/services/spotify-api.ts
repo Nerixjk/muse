@@ -71,7 +71,7 @@ export default class {
     console.log(search.body.tracks.items);
     const searchTrackId = search.body.tracks.items[0].id;
     const recommended = await this.spotify.getRecommendations({ seed_tracks: [searchTrackId], min_popularity: 50, limit: 1 });
-    console.log(recommended.body.tracks.items);
+    console.log(recommended);
     return this.limitTracks(recommended.body.tracks.items, 1).map(this.toSpotifyTrack);
   }
 
