@@ -68,10 +68,8 @@ export default class {
   
   async getRecommendationFromQuery(query: string): Promise<SpotifyTrack[]> {
     const search = await this.spotify.searchTracks(query, {limit: 1});
-    console.log(search.body.tracks.items);
     const searchTrackId = search.body.tracks.items[0].id;
-    const recommended = await this.spotify.getRecommendations({ seed_tracks: [searchTrackId], min_popularity: 75, limit: 1 });
-    console.log(recommended.body.tracks);
+    const recommended = await this.spotify.getRecommendations({ seed_tracks: [searchTrackId], min_popularity: 80, limit: 1 });
     return this.limitTracks(recommended.body.tracks, 1).map(this.toSpotifyTrack);
   }
 
