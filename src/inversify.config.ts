@@ -73,6 +73,7 @@ container.bind<SpotifyAPI>(TYPES.Services.SpotifyAPI).to(SpotifyAPI).inSingleton
   ForwardSeek,
   LoopQueue,
   Loop,
+  AutoQueue,
   Move,
   Next,
   NowPlaying,
