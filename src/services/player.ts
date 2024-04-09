@@ -1,5 +1,5 @@
 import {VoiceChannel, Snowflake} from 'discord.js';
-import {inject} from 'inversify';
+import {inject, injectable} from 'inversify';
 import {Readable} from 'stream';
 import hasha from 'hasha';
 import ytdl, {videoFormat} from 'ytdl-core';
@@ -19,7 +19,7 @@ import {
 } from '@discordjs/voice';
 import FileCacheProvider from './file-cache.js';
 import {TYPES} from '../types.js';
-import SpotifyAPI from './spotify-api.js';
+import SpotifyAPI from '../services/spotify-api.js';
 import GetSongs from '../services/get-songs.js';
 import debug from '../utils/debug.js';
 import {getGuildSettings} from '../utils/get-guild-settings.js';
@@ -65,6 +65,7 @@ type YTDLVideoFormat = videoFormat & {loudnessDb?: number};
 
 export const DEFAULT_VOLUME = 100;
 
+@injectable()
 export default class {
   public voiceConnection: VoiceConnection | null = null;
   public status = STATUS.PAUSED;
@@ -87,14 +88,9 @@ export default class {
   private readonly fileCache: FileCacheProvider;
   private disconnectTimer: NodeJS.Timeout | null = null;
   
-  private readonly spotifyAPI: SpotifyAPI;
-  private readonly getSongs: GetSongs;
-  
-  constructor(fileCache: FileCacheProvider, guildId: string, @inject(TYPES.Services.SpotifyAPI) spotifyAPI: SpotifyAPI, @inject(TYPES.Services.GetSongs) getSongs: GetSongs) {
+  constructor(fileCache: FileCacheProvider, guildId: string, @inject(TYPES.Services.SpotifyAPI) private readonly spotifyAPI: SpotifyAPI, @inject(TYPES.Services.GetSongs) private readonly getSongs: GetSongs) {
     this.fileCache = fileCache;
     this.guildId = guildId;
-    this.spotifyAPI = spotifyAPI;
-    this.getSongs = getSongs;
   }
 
   async connect(channel: VoiceChannel): Promise<void> {
@@ -590,11 +586,8 @@ export default class {
       const currentSong = this.getCurrent();
       
       if (currentSong) {
-
-        console.log(currentSong);
         
         //Gets related track from spotify
-        console.log(this.spotifyAPI);
         const recommended = await this.spotifyAPI.getRecommendationFromQuery(currentSong.title);
         const [convertedSongs] = await this.getSongs.spotifyToYouTube(recommended, false);
         
