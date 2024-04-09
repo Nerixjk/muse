@@ -17,6 +17,7 @@ import {
   VoiceConnection,
   VoiceConnectionStatus,
 } from '@discordjs/voice';
+import container from '../inversify.config.js';
 import FileCacheProvider from './file-cache.js';
 import {TYPES} from '../types.js';
 import SpotifyAPI from '../services/spotify-api.js';
@@ -88,7 +89,7 @@ export default class {
   private readonly fileCache: FileCacheProvider;
   private disconnectTimer: NodeJS.Timeout | null = null;
   
-  constructor(fileCache: FileCacheProvider, guildId: string, @inject(TYPES.Services.SpotifyAPI) private readonly spotifyAPI: SpotifyAPI, @inject(TYPES.Services.GetSongs) private readonly getSongs: GetSongs) {
+  constructor(fileCache: FileCacheProvider, guildId: string) {
     this.fileCache = fileCache;
     this.guildId = guildId;
   }
@@ -588,8 +589,10 @@ export default class {
       if (currentSong) {
         
         //Gets related track from spotify
-        const recommended = await this.spotifyAPI.getRecommendationFromQuery(currentSong.title);
-        const [convertedSongs] = await this.getSongs.spotifyToYouTube(recommended, false);
+        const spotifyAPI = container.get(SpotifyAPI);
+        const getSongs = container.get(GetSongs);
+        const recommended = await spotifyAPI.getRecommendationFromQuery(currentSong.title);
+        const [convertedSongs] = await getSongs.spotifyToYouTube(recommended, false);
         
         if (convertedSongs.length === 0) {
           throw new Error('Could not find a related song to put on.');
